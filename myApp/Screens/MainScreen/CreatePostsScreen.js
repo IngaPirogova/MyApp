@@ -1,23 +1,75 @@
 import { Octicons, Feather, MaterialIcons } from "@expo/vector-icons";
-// import { Camera } from "expo-camera";
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard  } from "react-native"
+ import { Camera } from "expo-camera";
+import React, { useState, useEffect } from "react";
+import { Image, 
+View, 
+Text, 
+StyleSheet, 
+TouchableOpacity, 
+TextInput, 
+TouchableWithoutFeedback, 
+KeyboardAvoidingView, Keyboard  } from "react-native"
 
-const CreatePostsScreen = () => {
+// import * as Location from 'expo-location';
+
+
+const CreatePostsScreen = ({ navigation }) => {
+  
+  const [cameraRef, setCameraRef] = useState(null);
+  const [photo, setPhoto] = useState(null);
+  const [name, setName] = useState("");
+  const [location, setLocation] = useState(null);
+  
+
+    const takePhoto = async () => {
+
+     const photo = await cameraRef.takePictureAsync();
+    //  const location = await Location.getCurrentPositionAsync();
+    //  console.log("latitude", location.coords.latitude);
+    //  console.log("longitude", location.coords.longitude);
+     setPhoto(photo.uri);
+     console.log("photo", photo);   
+     console.log("name", name);    
+   };
+
+  const sendPhoto = () => {
+    console.log("navigation", navigation);
+    navigation.navigate('Posts', {photo, name},);
+  };
+
     
 return (
- 
+
+  <TouchableWithoutFeedback  onPress={() => Keyboard.dismiss()}>
+
 <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
+<KeyboardAvoidingView
+            style={styles.wrapper}
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+          >
+            
+<View style={styles.container}>  
 
-
-  <View style={styles.container}>      
-    <View style={styles.camera}>
-     
-      <TouchableOpacity style={styles.cameraIconContainer}>
-      <MaterialIcons name="camera-alt" size={24} color="#BDBDBD" />
-     </TouchableOpacity>
-    </View> 
-    <Text style={styles.text}>Загрузите фото</Text>   
+    <Camera style={styles.camera} ref={setCameraRef}>
+ 
+       {photo && ( 
+        
+         <View style={styles.takePhotoContainer}>
+        <Image source={{uri: photo}} style={{ height: 200, width: '100%', borderRadius: 1 }}/>
+      </View>            
+      )}
+      <TouchableOpacity onPress={takePhoto}  style={{...styles.cameraIconContainer, backgroundColor: !photo ? '#FFFFFF' : 'rgba(255, 255, 255, 0.3)'}}>
+      <MaterialIcons name="camera-alt" size={24} style={{color: !photo ? '#BDBDBD' : '#FFFFFF'}} />
+          </TouchableOpacity>
+          
+         
+        
+    </Camera> 
+  
+           <Text style={styles.text}>
+           {!photo ? "Загрузите фото" : "Редактировать фото"}            
+            </Text>
+       
 
 <View style={{marginTop: 22}}>
     <View >
@@ -25,6 +77,8 @@ return (
      style={styles.input}
      placeholder="Название..."
      placeholderTextColor="#BDBDBD"
+     onChangeText={(value) => {setName(value)}}   
+     value={name} 
      />
      </View>
 
@@ -32,21 +86,28 @@ return (
      <TextInput
      style={{...styles.input, paddingLeft: 28}}
      placeholder="Местность..."
-     placeholderTextColor="#BDBDBD"
-     
+     placeholderTextColor="#BDBDBD"  
+     onChangeText={(value) => {setLocation(value)}}
+     value={location}  
      />
-      <Octicons name="location" color="#BDBDBD"size={22} style={{ position: "absolute", transform: [{ translateY: 11 }], }} />
+     <TouchableOpacity 
+     style={{ position: "absolute", transform: [{ translateY: 11 }], }}
+     onPress={() => navigation.navigate('Map')}>
+        <Octicons name="location" color="#BDBDBD"size={24}  />
+     </TouchableOpacity>      
      </View>
   </View>
-
      <TouchableOpacity
-        style={styles.button} 
-        activeOpacity={0.8}              
+        style={{...styles.button, backgroundColor: !photo ? '#f6f6f6' : '#ff6c00', }}
+        activeOpacity={0.8}
+         onPress={sendPhoto}  
+         
         >
-        <Text style={styles.btnTitle}>Опубликовать</Text>
+        <Text style={{...styles.btnTitle, color: !photo ? '#BDBDBD' : '#FFFFFF',}}>Опубликовать</Text>
+        
       </TouchableOpacity>
 
-      <TouchableOpacity 
+   <TouchableOpacity 
         style={styles.btnDel} 
         activeOpacity={0.8}>
           <Feather
@@ -58,16 +119,18 @@ return (
              size={23}
              color="#BDBDBD"
            />
-        </TouchableOpacity>                   
-  
+        </TouchableOpacity>   
 
-  </View>
        
+  </View>    
 
+  </KeyboardAvoidingView>
+ 
  </View>
-
-      
+</TouchableWithoutFeedback>   
+   
 );
+
 };
 
 
@@ -78,6 +141,10 @@ const styles = StyleSheet.create({
 //     justifyContent: 'center',
 //     alignItems: 'center',
 //     },
+wrapper: {
+  flex: 1,
+  justifyContent: "flex-end",
+},
 
     container: {
       flex: 1,
@@ -99,13 +166,24 @@ const styles = StyleSheet.create({
       justifyContent: "center",
     },
 
+    takePhotoContainer: {
+      position: "absolute",
+      borderColor: "#F6F6F6",
+      borderWidth: 1,
+      height: 200,
+      width: "100%",
+      borderRadius: 8,
+    },
+    
     cameraIconContainer: {    
+      position: "absolute",
       width: 60,
       height: 60,
       backgroundColor: "#FFF",
       borderRadius: 50,
       alignItems: "center",
       justifyContent: "center",
+      zIndex: 4,
   },
 
   text: {

@@ -79,8 +79,9 @@ console.log(Platform.OS);
                   backgroundColor: state.login ? "#fff" : "#f6f6f6",
                   borderColor: state.login ? "#ff6c00" : "#e8e8e8",
                 }}
-                  placeholder={"Логин"}
+                  placeholder="Логин"
                   placeholderTextColor="#bdbdbd"
+                  value={state.login}
                   onFocus={() => setIsShowKeyboard(true)}
                   onChangeText={(value) => {
                     setState((prevState) => ({ ...prevState, login: value }));
