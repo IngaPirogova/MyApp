@@ -26,13 +26,29 @@ const AuthStack = createNativeStackNavigator();
 //      };
 
 export const useRoute = () => {
-  return  (
+  return (
     <AuthStack.Navigator>
-          <AuthStack.Screen name='Registration' component={RegistrationScreen} options={{ headerShown: false }}/>
-          <AuthStack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }}/> 
-          <AuthStack.Screen name='Home' component={Home} />
-          <AuthStack.Screen name='Map' component={MapScreen} />
-          <AuthStack.Screen name='Comments' component={CommentsScreen} />
-       </AuthStack.Navigator> 
+      <AuthStack.Screen name='Registration' component={RegistrationScreen} options={{ headerShown: false }} />
+      <AuthStack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }} />
+      <AuthStack.Screen name='Home' component={Home} options={{
+        title: "Go back", headerTitleStyle: {
+          fontFamily: "Roboto-Medium",
+          fontSize: 15,
+
+        },
+      }} />
+      <AuthStack.Screen name='Map' component={MapScreen} options={{
+        title: "Карта", headerTitleAlign: "center", headerTitleStyle: {
+          fontFamily: "Roboto-Medium",
+          fontSize: 17, lineHeight: 22,
+        },
+      }} />
+      <AuthStack.Screen name='Comments' component={CommentsScreen} options={{
+        title: "Комментарии", headerTitleAlign: "center", headerTitleStyle: {
+          fontFamily: "Roboto-Medium",
+          fontSize: 17, lineHeight: 22,
+        },
+      }} />
+    </AuthStack.Navigator>
   )
 }
