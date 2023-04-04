@@ -33,6 +33,7 @@ const CreatePostsScreen = ({ navigation }) => {
     setLocation(location.coords);
     console.log("photo", photo);
     console.log("name", name);
+    console.log("location", location);
   };
 
   const sendPhoto = () => {
