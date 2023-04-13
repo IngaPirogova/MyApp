@@ -7,22 +7,22 @@ const state = {
 };
 
 export const authSlice = createSlice({
-    name: "auth",
-    initialState: state,
-    reducers: {
-      updateUserProfile: (state, { payload }) => ({
-        ...state, 
-        userId: payload.userId,
-        login: payload.login,
-      }),
+  name: "auth",
+  initialState: state,
+  reducers: {
+    updateUserProfile: (state, { payload }) => ({
+      ...state,
+      userId: payload.userId,
+      login: payload.login,
+    }),
 
-      authStateChange: (state, { payload }) => ({
-        ...state, 
-        stateChange: payload.stateChange,
-      }),
+    authStateChange: (state, { payload }) => ({
+      ...state,
+      stateChange: payload.stateChange,
+    }),
 
-      authSignOut: () => state,
-    },
-  });
+    authSignOut: () => state,
+  },
+});
 
-  console.log('authSlice', authSlice);
+console.log('authSlice', authSlice);

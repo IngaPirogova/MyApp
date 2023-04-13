@@ -3,14 +3,14 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
 import { authSlice } from './authReducer';
 
 const { updateUserProfile, authStateChange, authSignOut } = authSlice.actions;
- 
+
 export const authSignUpUser = ({ email, password, login }) => async (
   dispatch,
   getState
 ) => {
   try {
     await createUserWithEmailAndPassword(auth, email, password);
-    const user =  auth.currentUser;
+    const user = auth.currentUser;
     await user.updateProfile({
       displayName: login,
     });
@@ -21,7 +21,7 @@ export const authSignUpUser = ({ email, password, login }) => async (
       login: displayName,
       userId: uid,
     };
-    
+
     dispatch(updateUserProfile(userUpdateProfile));
   } catch (error) {
     console.log("error", error);
@@ -29,14 +29,14 @@ export const authSignUpUser = ({ email, password, login }) => async (
   }
 };
 
- export const authSignInUser = ({ email, password }) => async (
+export const authSignInUser = ({ email, password }) => async (
   dispatch,
   getState
 ) => {
   try {
     const user = await signInWithEmailAndPassword(auth, email, password);
     console.log("user", user);
-    } catch (error) {
+  } catch (error) {
     console.log("error", error);
     console.log("error.code", error.code);
     console.log("error.message", error.message);
@@ -44,8 +44,8 @@ export const authSignUpUser = ({ email, password, login }) => async (
 };
 
 export const authSignOutUser = () => async (dispatch, getState) => {
-   await auth.signOut();
-   dispatch(authSignOut());
+  await auth.signOut();
+  dispatch(authSignOut());
 };
 
 export const authStateCahngeUser = () => async (dispatch, getState) => {
@@ -53,15 +53,14 @@ export const authStateCahngeUser = () => async (dispatch, getState) => {
     if (user) {
       const userUpdateProfile = {
         nickName: user.displayName,
-        userId: user.uid,     
-    };
+        userId: user.uid,
+      };
 
-    dispatch(authStateChange({ stateChange: true }));
-    dispatch(updateUserProfile(userUpdateProfile)); 
-  }  
-});
+      dispatch(authStateChange({ stateChange: true }));
+      dispatch(updateUserProfile(userUpdateProfile));
+    }
+  });
 };
-    
 
 
 
@@ -85,11 +84,6 @@ export const authStateCahngeUser = () => async (dispatch, getState) => {
 
 
 
-//   export const authSignInUser = () => async (dispatch, getSatte) => {};
-
-//   export const authSignOutUser = () => async (dispatch, getSatte) => {};
-
-//   import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 
 
@@ -101,16 +95,3 @@ export const authStateCahngeUser = () => async (dispatch, getState) => {
 
 
 
-
-// const authSignUpUser = getAuth();
-// createUserWithEmailAndPassword(auth, email, password)
-//   .then((userCredential) => {
-//     // Signed in 
-//     const user = userCredential.user;
-//     // ...
-//   })
-//   .catch((error) => {
-//     const errorCode = error.code;
-//     const errorMessage = error.message;
-//     // ..
-//   });
