@@ -12,6 +12,8 @@ import {
   Platform,
   TouchableWithoutFeedback,
 } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { authSignUpUser } from '../../redux/auth/authOperations';
 
 
 const initialState = {
@@ -21,11 +23,15 @@ const initialState = {
 };
 
 export default function RegistrationScreen({ navigation }) {
-console.log('navigation', navigation);
-console.log(Platform.OS);
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [state, setState] = useState(initialState);
-  const [isShowPassword, setIsShowPassword] = useState(false);
+
+ console.log('navigation', navigation);
+ console.log(Platform.OS);
+
+ const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+ const [state, setState] = useState(initialState);
+ const [isShowPassword, setIsShowPassword] = useState(false);
+
+ const dispatch = useDispatch();
  
 
   const keyboardHide = () => {
@@ -35,6 +41,11 @@ console.log(Platform.OS);
     setState(initialState);
   };
 
+
+  const handleSubmit = () => {
+    keyboardHide();
+    dispatch(authSignUpUser(state));    
+  };
   
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
@@ -49,7 +60,7 @@ console.log(Platform.OS);
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
 
-            <View style={{ ...styles.registrationWrapper, marginBottom: isShowKeyboard ? -140 : 0 }}>
+            <View style={{ ...styles.registrationWrapper, marginBottom: isShowKeyboard ? -140 : 0, paddingBottom: isShowKeyboard ? 100 : 45 }}>
 
               <View style={{
                 ...styles.userFoto,
@@ -97,6 +108,7 @@ console.log(Platform.OS);
                 }}
                   placeholder={"Адрес электронной почты"}
                   placeholderTextColor="#bdbdbd"
+                  value={state.email}
                   onFocus={() => setIsShowKeyboard(true)}
                   onChangeText={(value) => {
                     setState((prevState) => ({ ...prevState, email: value }));
@@ -113,6 +125,7 @@ console.log(Platform.OS);
                   placeholder={"Пароль"}
                   placeholderTextColor="#bdbdbd"
                   secureTextEntry={!isShowPassword}
+                  value={state.password}
                   onFocus={() => setIsShowKeyboard(true)}
                   onChangeText={(value) => {
                     setState((prevState) => ({ ...prevState, password: value }));
@@ -124,10 +137,11 @@ console.log(Platform.OS);
               </View>
               <TouchableOpacity
                 activeOpacity={0.8}
-                style={styles.registerBtn}
-                onPress={() => navigation.navigate('Home', {
-                  screen: 'PostScreen',
-              })}
+                style={{...styles.registerBtn, marginTop: isShowKeyboard ? 40 : 40 }}
+              //   onPress={() => navigation.navigate('Home', {
+              //     screen: 'PostScreen',
+              // })}
+              onPress={handleSubmit}
               >
                 <Text style={styles.btnTitle}>Зарегистрироваться</Text>
               </TouchableOpacity>

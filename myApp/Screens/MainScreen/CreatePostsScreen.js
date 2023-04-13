@@ -11,16 +11,46 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView, Keyboard
 } from "react-native"
-
+// import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 
 
 const CreatePostsScreen = ({ navigation }) => {
-
+  //  const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [name, setName] = useState("");
   const [location, setLocation] = useState(null);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const { status } = await Camera.requestForegroundPermissionsAsync();
+  //     await MediaLibrary.requestPermissionsAsync();
+
+  //     setHasPermission(status === "granted");
+  //   })();
+    
+  // }, []);
+
+  // if (hasPermission === null) {
+  //   return <View />;
+  // }
+  // if (hasPermission === false) {
+  //   return <Text>No access to camera</Text>;
+  // }
+
+
+
+  // useEffect(() => {
+  //   (async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       console.log("Permission to access location was denied");
+  //     }
+
+      
+  //   })();
+  // }, []);
 
 
   const takePhoto = async () => {

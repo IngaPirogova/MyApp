@@ -11,6 +11,9 @@ import {
     Platform,
     TouchableWithoutFeedback,
 } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { authSignInUser } from '../../redux/auth/authOperations';
+
 
 const initialState = {
 
@@ -24,16 +27,21 @@ export default function LoginScreen({ navigation }) {
     const [isShowKeyboard, setIsShowKeyboard] = useState(false);
     const [state, setState] = useState(initialState);
     const [isShowPassword, setIsShowPassword] = useState(false);
+    const dispatch = useDispatch();
     
 
     const keyboardHide = () => {
         setIsShowKeyboard(false);
         Keyboard.dismiss();
-        console.log(state);
         setState(initialState);
     };
 
-     return (
+    const handleSubmit = () => {
+        keyboardHide();
+        dispatch(authSignInUser(state));
+    };
+      
+    return (
         <TouchableWithoutFeedback onPress={keyboardHide}>
             <View style={styles.container} >
 
@@ -66,6 +74,7 @@ export default function LoginScreen({ navigation }) {
                                     onChangeText={(value) => {
                                         setState((prevState) => ({ ...prevState, email: value }));
                                     }}
+                                    value={state.email}
                                 />
                             </View>
 
@@ -82,6 +91,7 @@ export default function LoginScreen({ navigation }) {
                                     onChangeText={(value) => {
                                         setState((prevState) => ({ ...prevState, password: value }));
                                     }}
+                                    value={state.password}
                                 />
                                 <Text style={{ ...styles.showPasswordText, transform: [{ translateY: -10 }], fontFamily: 'Roboto-Regular', fontSize: 16 }}>
                                     {!isShowPassword ? "Показать" : "Скрыть"}
@@ -91,10 +101,11 @@ export default function LoginScreen({ navigation }) {
 
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                style={styles.loginBtn}
-                                onPress={() => navigation.navigate('Home', {
-                                    screen: 'PostScreen',
-                                })}
+                                style={{...styles.loginBtn, marginBottom: isShowKeyboard ? 50 : 40}}
+                                // onPress={() => navigation.navigate('Home', {
+                                //     screen: 'PostScreen',
+                                // })}
+                                onPress={handleSubmit}
                             >
                                 <Text style={styles.btnTitle}>Войти</Text>
                             </TouchableOpacity>
