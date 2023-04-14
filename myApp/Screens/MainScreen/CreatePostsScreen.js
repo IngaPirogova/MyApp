@@ -13,6 +13,12 @@ import {
 } from "react-native"
 // import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
+import { storage } from "../../firebase/config";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { getAuth } from "firebase/auth";
+import "firebase/auth";
+import "firebase/storage";
+
 
 
 const CreatePostsScreen = ({ navigation }) => {
@@ -21,6 +27,9 @@ const CreatePostsScreen = ({ navigation }) => {
   const [photo, setPhoto] = useState(null);
   const [name, setName] = useState("");
   const [location, setLocation] = useState(null);
+
+   const storage = getStorage();
+ 
 
   // useEffect(() => {
   //   (async () => {
@@ -57,20 +66,45 @@ const CreatePostsScreen = ({ navigation }) => {
 
     const photo = await cameraRef.takePictureAsync();
     const location = await Location.getCurrentPositionAsync();
-    console.log("latitude", location.coords.latitude);
-    console.log("longitude", location.coords.longitude);
+    // console.log("latitude", location.coords.latitude);
+    // console.log("longitude", location.coords.longitude);
     setPhoto(photo.uri);
     setLocation(location.coords);
-    console.log("photo", photo);
-    console.log("name", name);
-    console.log("location", location);
+    // console.log("photo", photo);
+    // console.log("name", name);
+    // console.log("location", location);
   };
 
   const sendPhoto = () => {
-    console.log("navigation", navigation);
+try {
+  if (!photo || !name) {
+    console.log("Заполните все обязательные поля");
+    return;
+    }
+  if (photo && name) {
+    uploadPhotoToServer();
     navigation.navigate('Posts', { photo, name, location },);
-  };
+  }
+  } catch (error) {    
+    console.log(error);
+  }
+}      
 
+  const uploadPhotoToServer = async () => {
+try {
+  const response = await fetch(photo.toString());
+  const file = await response.blob();
+  const uniquePostId = Date.now().toString();  
+  const imageData = ref(storage, `postImage/${uniquePostId}`);
+  console.log("imageData", imageData);
+  console.log("file", file);  
+   if (imageData !== undefined) {
+     await uploadBytes(imageData, file);   
+  }}catch (error) {  
+  console.log(error);
+}   
+};
+  
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
@@ -153,12 +187,7 @@ const CreatePostsScreen = ({ navigation }) => {
 
 
 const styles = StyleSheet.create({
-  //  container: {
-  //     flex: 1,
-  //     justifyContent: 'center',
-  //     alignItems: 'center',
-  //     },
-  wrapper: {
+    wrapper: {
     flex: 1,
     justifyContent: "flex-end",
   },
@@ -224,7 +253,6 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 100,
     marginTop: 25,
-    // marginHorizontal: 20,
     justifyContent: "center",
     alignItems: 'center',
     backgroundColor: "#F6F6F6",
