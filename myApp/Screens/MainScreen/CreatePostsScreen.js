@@ -1,6 +1,7 @@
 import { Octicons, Feather, MaterialIcons } from "@expo/vector-icons";
 import { Camera } from "expo-camera";
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   Image,
   View,
@@ -14,7 +15,9 @@ import {
 // import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 import { storage } from "../../firebase/config";
+import { db } from "../../firebase/config";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { addDoc, collection, getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import "firebase/auth";
 import "firebase/storage";
@@ -27,9 +30,11 @@ const CreatePostsScreen = ({ navigation }) => {
   const [photo, setPhoto] = useState(null);
   const [name, setName] = useState("");
   const [location, setLocation] = useState(null);
+  const [comment, setComment] = useState("");
+  const storage = getStorage();
 
-   const storage = getStorage();
- 
+  const { userId, nickName } = useSelector((state) => state.auth);
+
 
   // useEffect(() => {
   //   (async () => {
@@ -38,7 +43,7 @@ const CreatePostsScreen = ({ navigation }) => {
 
   //     setHasPermission(status === "granted");
   //   })();
-    
+
   // }, []);
 
   // if (hasPermission === null) {
@@ -48,63 +53,105 @@ const CreatePostsScreen = ({ navigation }) => {
   //   return <Text>No access to camera</Text>;
   // }
 
-
-
   // useEffect(() => {
   //   (async () => {
-  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     let { status } = await Location.requestPermissionsAsync();
   //     if (status !== "granted") {
   //       console.log("Permission to access location was denied");
   //     }
 
-      
+  //     let location = await Location.getCurrentPositionAsync({});
+  //     const coords = {
+  //       latitude: location.coords.latitude,
+  //       longitude: location.coords.longitude,
+  //     };
+  //     setLocation(coords);
   //   })();
   // }, []);
 
 
-  const takePhoto = async () => {
 
+  useEffect(() => {
+    (async () => {
+     let { status } = await Location.requestForegroundPermissionsAsync();
+     if (status !== "granted") {
+      console.log("Permission to access location was denied");
+    }
+     let location = await Location.getCurrentPositionAsync({});
+     setLocation(location.coords);
+    })();
+  }, []);
+
+
+  const takePhoto = async () => {
     const photo = await cameraRef.takePictureAsync();
     const location = await Location.getCurrentPositionAsync();
-    // console.log("latitude", location.coords.latitude);
-    // console.log("longitude", location.coords.longitude);
-    setPhoto(photo.uri);
-    setLocation(location.coords);
-    // console.log("photo", photo);
-    // console.log("name", name);
-    // console.log("location", location);
+    setPhoto(photo.uri);   
+    console.log("location", location);
+    console.log("comment", comment);
   };
 
   const sendPhoto = () => {
-try {
-  if (!photo || !name) {
-    console.log("Заполните все обязательные поля");
-    return;
+    try {
+      if (!photo || !name) {
+        console.log("Заполните все обязательные поля");
+        return;
+      }
+      if (photo && name) {
+        uploadPostToServer();
+        //uploadPhotoToServer();
+        navigation.navigate('Posts', { photo, name, location },);
+      }
+    } catch (error) {
+      console.log(error);
     }
-  if (photo && name) {
-    uploadPhotoToServer();
-    navigation.navigate('Posts', { photo, name, location },);
-  }
-  } catch (error) {    
-    console.log(error);
-  }
-}      
+  };
+
+
+    const uploadPostToServer = async () => {
+    try {
+      const photo = await uploadPhotoToServer();
+      const createPost = collection(db, "posts");
+      const file = await addDoc(createPost, { photo, comment, location: location.coords, userId, nickName });
+  
+      // return file.id;
+       return file;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  // const uploadCommentToServer = async (postId, content) => {
+  //   try {
+  //    const commentsColection = collection(db, `posts/${postId}/comments`);
+  //    const commentRef = await addDoc(commentsColection, content);
+
+  //     return commentRef.id;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
 
   const uploadPhotoToServer = async () => {
-try {
-  const response = await fetch(photo.toString());
-  const file = await response.blob();
-  const uniquePostId = Date.now().toString();  
-  const imageData = ref(storage, `postImage/${uniquePostId}`);
-  console.log("imageData", imageData);
-  console.log("file", file);  
-   if (imageData !== undefined) {
-     await uploadBytes(imageData, file);   
-  }}catch (error) {  
-  console.log(error);
-}   
-};
+    try {
+      const response = await fetch(photo.toString());
+      const file = await response.blob();
+      const uniquePostId = Date.now().toString();
+      const imageData = ref(storage, `postImage/${uniquePostId}`);
+      if (imageData !== undefined) {
+        await uploadBytes(imageData, file);
+      }
+      const processedPhoto = await getDownloadURL(imageData);                 
+      return processedPhoto; 
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
@@ -187,7 +234,7 @@ try {
 
 
 const styles = StyleSheet.create({
-    wrapper: {
+  wrapper: {
     flex: 1,
     justifyContent: "flex-end",
   },

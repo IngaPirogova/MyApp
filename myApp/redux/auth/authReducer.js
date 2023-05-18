@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const state = {
   userId: null,
-  login: null,
+  nickName: null,
   stateChange: false,
 };
 
@@ -13,7 +13,7 @@ export const authSlice = createSlice({
     updateUserProfile: (state, { payload }) => ({
       ...state,
       userId: payload.userId,
-      login: payload.login,
+      nickName: payload.nickName,
     }),
 
     authStateChange: (state, { payload }) => ({
