@@ -107,44 +107,17 @@ const CreatePostsScreen = ({ navigation }) => {
     }
   };
 
-//   const uploadPostToServer = async () => {
-//     const photo = await uploadPhotoToServer();
-   
-//     try {
-//         const docRef = await addDoc(collection(db, "posts"), {
-//             photo,
-//             userId,
-//             nickName,
-//             comment,
-//             location: location.coords
-//         });
-
-        
-//     } catch (error) {
-//         console.log(error);
-//     }
-// };
-
-
-
     const uploadPostToServer = async () => {
-      const photo = await uploadPhotoToServer();
-      
-    try {
-     
+      const photo = await uploadPhotoToServer();      
+    try {     
       const createPost = collection(db, "posts");
       const file = await addDoc(createPost, { photo, comment, location: location.coords, userId, nickName });
-  
-      // return file.id;
+        // return file.id;
        return file.userId;
     } catch (error) {
       console.log(error);
     }
   };
-
-
-
-
 
   // const uploadCommentToServer = async (postId, content) => {
   //   try {
