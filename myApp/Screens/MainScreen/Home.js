@@ -100,7 +100,13 @@ const Home = () => {
 
       <MainTab.Screen
         options={{
-          headerShown: false,
+          title: "Профиль",
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontFamily: "Roboto-Medium",
+            fontSize: 17,
+            lineHeight: 22,
+          },
           tabBarActiveTintColor: "#fff",
           tabBarInactiveTintColor: "#212121",
           tabBarIcon: ({ focused, color, size }) => (

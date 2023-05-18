@@ -22,7 +22,8 @@ export const useRoute = (isAuth) => {
     return (
         <AuthStack.Navigator>
        <AuthStack.Screen name='Home' component={Home} options={{
-        title: "Go back", headerTitleStyle: {
+        title: "Go back", 
+        headerTitleStyle: {
           fontFamily: "Roboto-Medium",
           fontSize: 15,
         },

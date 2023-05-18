@@ -12,7 +12,7 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView, Keyboard
 } from "react-native"
-// import * as MediaLibrary from 'expo-media-library';
+ //import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 import { storage } from "../../firebase/config";
 import { db } from "../../firebase/config";
@@ -25,7 +25,7 @@ import "firebase/storage";
 
 
 const CreatePostsScreen = ({ navigation }) => {
-  //  const [hasPermission, setHasPermission] = useState(null);
+    //const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [name, setName] = useState("");
@@ -107,19 +107,43 @@ const CreatePostsScreen = ({ navigation }) => {
     }
   };
 
+//   const uploadPostToServer = async () => {
+//     const photo = await uploadPhotoToServer();
+   
+//     try {
+//         const docRef = await addDoc(collection(db, "posts"), {
+//             photo,
+//             userId,
+//             nickName,
+//             comment,
+//             location: location.coords
+//         });
+
+        
+//     } catch (error) {
+//         console.log(error);
+//     }
+// };
+
+
 
     const uploadPostToServer = async () => {
-    try {
       const photo = await uploadPhotoToServer();
+      
+    try {
+     
       const createPost = collection(db, "posts");
       const file = await addDoc(createPost, { photo, comment, location: location.coords, userId, nickName });
   
       // return file.id;
-       return file;
+       return file.userId;
     } catch (error) {
       console.log(error);
     }
   };
+
+
+
 
 
   // const uploadCommentToServer = async (postId, content) => {
