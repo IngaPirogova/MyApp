@@ -15,8 +15,8 @@ export const authSignUpUser = ({ email, password, nickname }) => async (
       displayName: nickname,
     });
 
-    const { displayName, uid } = await auth.currentUser;
-
+     const { displayName, uid } = await auth.currentUser;
+      
     const userUpdateProfile = {
       nickName: displayName,
       userId: uid,
@@ -28,6 +28,7 @@ export const authSignUpUser = ({ email, password, nickname }) => async (
     console.log("error.message", error.message);
   }
 };
+
 
 export const authSignInUser = ({ email, password }) => async (
   dispatch,
@@ -42,12 +43,10 @@ export const authSignInUser = ({ email, password }) => async (
     console.log("error.message", error.message);
   }
 };
-
 export const authSignOutUser = () => async (dispatch, getState) => {
   await auth.signOut();
   dispatch(authSignOut());
 };
-
 export const authStateCahngeUser = () => async (dispatch, getState) => {
   await auth.onAuthStateChanged((user) => {
     if (user) {
@@ -55,7 +54,6 @@ export const authStateCahngeUser = () => async (dispatch, getState) => {
         nickName: user.displayName,
         userId: user.uid,
       };
-
       dispatch(authStateChange({ stateChange: true }));
       dispatch(updateUserProfile(userUpdateProfile));
     }

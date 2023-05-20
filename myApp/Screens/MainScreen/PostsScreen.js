@@ -3,19 +3,36 @@ import {
   View, StyleSheet, FlatList, Image, TouchableOpacity, Text
 } from "react-native"
 import { Octicons, FontAwesome5 } from "@expo/vector-icons";
-
+import db from '../../firebase/config';
+import { collection, getDocs } from 'firebase/firestore'; 
 
 const PostsScreen = ({ route, navigation }) => {
   const [posts, setPosts] = useState([]);
   console.log('route.params', route.params);
   const [commentsQuantity, setCommentsQuantity] = useState({});
 
+  
+  // const getDataFromFirestore = async () => {
+  //   try {
+  //     const snapshot = await getDocs(collection(db, 'posts'));
+  //           // Перевіряємо у консолі отримані дані
+  //     snapshot.forEach((doc) => console.log(`${doc.id} =>`, doc.data()));
+  //           // Повертаємо масив обʼєктів у довільній формі
+  //           return snapshot.map((doc) => ({ id: doc.id, data: doc.data() }));
+  //   } catch (error) {
+  //     console.log(error);
+  //           throw error;
+  //   }
+  // };
+
   useEffect(() => {
     if (route.params) {
       setPosts((prevState) => [...prevState, route.params]);
     }
+    // getDataFromFirestore()
   }, [route.params]);
   console.log('posts', posts);
+
 
   return (
 
