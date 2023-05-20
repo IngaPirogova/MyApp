@@ -22,7 +22,7 @@ import "firebase/storage";
 
 
 const CreatePostsScreen = ({ navigation }) => {
-  //   const [hasPermission, setHasPermission] = useState(null);
+  //  const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [name, setName] = useState("");

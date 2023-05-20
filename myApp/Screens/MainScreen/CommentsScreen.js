@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,16 +7,21 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
-
+  SafeAreaView,
+  FlatList,
 } from "react-native";
 import { useSelector } from "react-redux";
 import db from "../../firebase/config";
 import { AntDesign } from "@expo/vector-icons";
+import { addDoc, collection, doc, getDocs } from "firebase/firestore"; 
 
-const CommentsScreen = () => {
-//   const { postId } = route.params;
-  const [comment, setComment] = useState("");
-  const { nickName } = useSelector((state) => state.auth);
+
+const CommentsScreen = ({route}) => {
+const { postId } = route.params;
+const { nickName } = useSelector((state) => state.auth);
+const [newComment, setNewComment] = useState("");
+const [allComments, setAllComments] = useState([]);
+
 //   const createPost = async () => {
 //     db.firestore()
 //       .collection("posts")
@@ -25,6 +29,40 @@ const CommentsScreen = () => {
 //       .collection("comments")
 //       .add({ comment, nickName });
 //   };
+const createPost = async () => {
+    try {
+      const docRef = doc(collection(db, "posts"), postId);
+      await addDoc(collection(docRef, "comments"), {
+        comments: newComment,
+        nickName,
+      });
+
+      console.log("Documment create: ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  };
+
+  useEffect(() => {
+    const getAllPostsComments = async () => {
+      try {
+        const docRef = doc(collection(db, "posts"), postId);
+        const commentsSnapshot = await getDocs(collection(docRef, "comments"));
+        const commentsAll = commentsSnapshot.docs.map((commentDoc) => ({
+          ...commentDoc.data(),
+          id: commentDoc.id,
+        }));
+        
+        setAllComments(commentsAll)
+        
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
+    getAllPostsComments();
+  }, []);
+
 
   return (
     <TouchableWithoutFeedback 
@@ -37,19 +75,33 @@ const CommentsScreen = () => {
         >
 
     <View style={styles.wrapper}>
+
+    <SafeAreaView >
+        <FlatList
+          data={allComments}
+          renderItem={({ item }) => (
+            <View>
+              <Text style={{ color: "black" }}>{item.comments}</Text>
+            </View>
+          )}
+          keyExtractor={(item) => item.id}
+        />
+      </SafeAreaView>
+
       <View style={styles.inputWrapper}>
           <TextInput
             style={styles.input}
             placeholder="Комментировать..."
             placeholderTextColor="#BDBDBD"
-            // value={comment}
-            // onChangeText={(value) => setComment(value)}
+             value={newComment}
+             onChangeText={(value) => setNewComment(value)}
           />          
     
     <TouchableOpacity
-            // onPress={submitHandler}
+            onPress={()=> createPost()}
             activeOpacity={0.8}
             style={styles.iconWrapper}
+
           >
             <AntDesign
               style={[
