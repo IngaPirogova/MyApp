@@ -81,7 +81,7 @@ const createPost = async () => {
           data={allComments}
           renderItem={({ item }) => (
             <View>
-              <Text style={{ color: "black" }}>{item.comments}</Text>
+              <Text>{item.comments}</Text>
             </View>
           )}
           keyExtractor={(item) => item.id}
