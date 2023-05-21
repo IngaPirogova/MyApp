@@ -4,7 +4,7 @@ import { authSlice } from './authReducer';
 
 const { updateUserProfile, authStateChange, authSignOut } = authSlice.actions;
 
-export const authSignUpUser = ({ email, password, nickname }) => async (
+export const authSignUpUser = ({ email, password, login }) => async (
   dispatch,
   getState
 ) => {
@@ -12,7 +12,7 @@ export const authSignUpUser = ({ email, password, nickname }) => async (
     await createUserWithEmailAndPassword(auth, email, password);
     const user = auth.currentUser;
     await user.updateProfile({
-      displayName: nickname,
+      displayName: login,
     });
 
      const { displayName, uid } = await auth.currentUser;
