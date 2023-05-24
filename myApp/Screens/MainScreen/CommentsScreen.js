@@ -78,7 +78,7 @@ const createPost = async () => {
 
     <SafeAreaView >
         <FlatList
-          data={allComments}
+          // data={comm}
           renderItem={({ item }) => (
             <View>
               <Text>{item.comments}</Text>

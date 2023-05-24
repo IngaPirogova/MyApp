@@ -48,9 +48,7 @@ const CreatePostsScreen = ({ navigation }) => {
 //     return <Text>No access to camera</Text>;
 //   }
 
-
-
-    
+  
   useEffect(() => {
     (async () => {
      let { status } = await Location.requestForegroundPermissionsAsync();
@@ -116,7 +114,7 @@ const CreatePostsScreen = ({ navigation }) => {
     }
   };
 
-  
+   
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={{ flex: 1, backgroundColor: "#ffffff" }}>

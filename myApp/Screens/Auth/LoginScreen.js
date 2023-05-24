@@ -17,7 +17,7 @@ import { authSignInUser } from '../../redux/auth/authOperations';
 
 const initialState = {
 
-    email: "",
+    userEmail: "",
     password: "",
 };
 
@@ -65,16 +65,16 @@ export default function LoginScreen({ navigation }) {
                             <View style={{ marginTop: 16 }}>
                                 <TextInput style={{
                                     ...styles.loginInput,
-                                    backgroundColor: state.email ? "#fff" : "#f6f6f6",
-                                    borderColor: state.email ? "#ff6c00" : "#e8e8e8",
+                                    backgroundColor: state.userEmail ? "#fff" : "#f6f6f6",
+                                    borderColor: state.userEmail ? "#ff6c00" : "#e8e8e8",
                                 }}
                                     placeholder={"Адрес электронной почты"}
                                     placeholderTextColor="#bdbdbd"
                                     onFocus={() => setIsShowKeyboard(true)}
                                     onChangeText={(value) => {
-                                        setState((prevState) => ({ ...prevState, email: value }));
+                                        setState((prevState) => ({ ...prevState, userEmail: value }));
                                     }}
-                                    value={state.email}
+                                    value={state.userEmail}
                                 />
                             </View>
 

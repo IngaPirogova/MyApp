@@ -17,8 +17,8 @@ import { authSignUpUser } from '../../redux/auth/authOperations';
 
 
 const initialState = {
-  login: "",
-  email: "",
+  nickName: "",
+  userEmail: "",
   password: "",
 };
 
@@ -87,15 +87,15 @@ export default function RegistrationScreen({ navigation }) {
               <View>
                 <TextInput style={{
                   ...styles.registerInput,
-                  backgroundColor: state.login ? "#fff" : "#f6f6f6",
-                  borderColor: state.login ? "#ff6c00" : "#e8e8e8",
+                  backgroundColor: state.nickName ? "#fff" : "#f6f6f6",
+                  borderColor: state.nickName ? "#ff6c00" : "#e8e8e8",
                 }}
                   placeholder="Логин"
                   placeholderTextColor="#bdbdbd"
-                  value={state.login}
+                  value={state.nickName}
                   onFocus={() => setIsShowKeyboard(true)}
                   onChangeText={(value) => {
-                    setState((prevState) => ({ ...prevState, login: value }));
+                    setState((prevState) => ({ ...prevState, nickName: value }));
                   }}
                 />
               </View>
@@ -103,15 +103,15 @@ export default function RegistrationScreen({ navigation }) {
               <View style={{ marginTop: 16 }}>
                 <TextInput style={{
                   ...styles.registerInput,
-                  backgroundColor: state.email ? "#fff" : "#f6f6f6",
-                  borderColor: state.email ? "#ff6c00" : "#e8e8e8",
+                  backgroundColor: state.userEmail ? "#fff" : "#f6f6f6",
+                  borderColor: state.userEmail ? "#ff6c00" : "#e8e8e8",
                 }}
                   placeholder={"Адрес электронной почты"}
                   placeholderTextColor="#bdbdbd"
-                  value={state.email}
+                  value={state.userEmail}
                   onFocus={() => setIsShowKeyboard(true)}
                   onChangeText={(value) => {
-                    setState((prevState) => ({ ...prevState, email: value }));
+                    setState((prevState) => ({ ...prevState, userEmail: value }));
                   }}
                 />
               </View>
