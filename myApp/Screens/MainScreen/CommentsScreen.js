@@ -11,7 +11,7 @@ import {
   FlatList,
 } from "react-native";
 import { useSelector } from "react-redux";
-import db from "../../firebase/config";
+import {db} from "../../firebase/config";
 import { AntDesign } from "@expo/vector-icons";
 import { addDoc, collection, doc, getDocs } from "firebase/firestore"; 
 
@@ -22,46 +22,7 @@ const { nickName } = useSelector((state) => state.auth);
 const [newComment, setNewComment] = useState("");
 const [allComments, setAllComments] = useState([]);
 
-//   const createPost = async () => {
-//     db.firestore()
-//       .collection("posts")
-//       .doc(postId)
-//       .collection("comments")
-//       .add({ comment, nickName });
-//   };
-const createPost = async () => {
-    try {
-      const docRef = doc(collection(db, "posts"), postId);
-      await addDoc(collection(docRef, "comments"), {
-        comments: newComment,
-        nickName,
-      });
 
-      console.log("Documment create: ID: ", docRef.id);
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
-  };
-
-  useEffect(() => {
-    const getAllPostsComments = async () => {
-      try {
-        const docRef = doc(collection(db, "posts"), postId);
-        const commentsSnapshot = await getDocs(collection(docRef, "comments"));
-        const commentsAll = commentsSnapshot.docs.map((commentDoc) => ({
-          ...commentDoc.data(),
-          id: commentDoc.id,
-        }));
-        
-        setAllComments(commentsAll)
-        
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-
-    getAllPostsComments();
-  }, []);
 
 
   return (

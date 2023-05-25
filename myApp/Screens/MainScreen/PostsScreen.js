@@ -3,35 +3,54 @@ import {
   View, StyleSheet, FlatList, Image, TouchableOpacity, Text
 } from "react-native"
 import { Octicons, FontAwesome5 } from "@expo/vector-icons";
-import db from '../../firebase/config';
-import { collection, getDocs } from 'firebase/firestore'; 
+import { db } from '../../firebase/config';
+import { collection, getDocs, onSnapshot } from 'firebase/firestore'; 
 
 const PostsScreen = ({ route, navigation }) => {
   const [posts, setPosts] = useState([]);
   console.log('route.params', route.params);
   const [commentsQuantity, setCommentsQuantity] = useState({});
 
-  
-  // const getDataFromFirestore = async () => {
-  //   try {
-  //     const snapshot = await getDocs(collection(db, 'posts'));
-  //           // Перевіряємо у консолі отримані дані
-  //     snapshot.forEach((doc) => console.log(`${doc.id} =>`, doc.data()));
-  //           // Повертаємо масив обʼєктів у довільній формі
-  //           return snapshot.map((doc) => ({ id: doc.id, data: doc.data() }));
-  //   } catch (error) {
-  //     console.log(error);
-  //           throw error;
-  //   }
-  // };
+     
+  useEffect(() => {
+    onSnapshot(collection(db, "posts"), (data) => {
+      const posts = data?.docs.map((doc) => {
+        const docData = doc.data() ;
+        const docId = doc.id;
+
+        return { ...docData, postId: docId };
+      });
+
+      setPosts(posts );
+    });
+  }, []);
 
   useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
-    }
-    // getDataFromFirestore()
-  }, [route.params]);
-  console.log('posts', posts);
+    posts.forEach((post) => {
+      onSnapshot(collection(db, `posts/${post.postId}/comments`), (data) => {
+        const commentsArray = data?.docs.map((doc) => {
+          const docData = doc.data() ;
+          const docId = doc.id;
+
+          return { ...docData, commentId: docId };
+        });
+
+        const singlePostComments = { [post.postId]: commentsArray.length };
+        setCommentsQuantity((prevComments) => {
+          return { ...prevComments, ...singlePostComments };
+        });
+      });
+    });
+  }, []);
+
+
+  // useEffect(() => {
+  //   if (route.params) {
+  //     setPosts((prevState) => [...prevState, route.params]);
+  //   }
+   
+  // }, [route.params]);
+  // console.log('posts', posts);
 
 
   return (
@@ -57,7 +76,7 @@ const PostsScreen = ({ route, navigation }) => {
               <View style={styles.wrapperDescr}>
                 <TouchableOpacity
                   style={styles.inputWrapper}      
-                  onPress={() => navigation.navigate('Comments', { comments: item.comments })}
+                  onPress={() => navigation.navigate('Comments', { postId: item.id })}
                   activeOpacity={0.8}
                 >
                   <FontAwesome5 style={styles.icon} name="comment" size={24} color="#BDBDBD" />
