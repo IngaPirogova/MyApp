@@ -22,8 +22,16 @@ const { nickName } = useSelector((state) => state.auth);
 const [newComment, setNewComment] = useState("");
 const [allComments, setAllComments] = useState([]);
 
-
-
+const uploadComments = async () => {
+  try {
+    const commentsCollection = collection(db, `posts/${postId}/comments`);
+    const commentData = { comments: newComment, nickName };
+    const commentRef = await addDoc(commentsCollection, commentData);
+    return commentRef.id;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
   return (
     <TouchableWithoutFeedback 
@@ -39,7 +47,7 @@ const [allComments, setAllComments] = useState([]);
 
     <SafeAreaView >
         <FlatList
-          // data={comm}
+           data={allComments}
           renderItem={({ item }) => (
             <View>
               <Text>{item.comments}</Text>
@@ -59,7 +67,7 @@ const [allComments, setAllComments] = useState([]);
           />          
     
     <TouchableOpacity
-            onPress={()=> createPost()}
+            onPress={uploadComments}
             activeOpacity={0.8}
             style={styles.iconWrapper}
 

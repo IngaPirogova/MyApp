@@ -21,39 +21,12 @@ const PostsScreen = ({ route, navigation }) => {
         return { ...docData, postId: docId };
       });
 
-      setPosts(posts );
+      setPosts(posts);
     });
   }, []);
 
-  useEffect(() => {
-    posts.forEach((post) => {
-      onSnapshot(collection(db, `posts/${post.postId}/comments`), (data) => {
-        const commentsArray = data?.docs.map((doc) => {
-          const docData = doc.data() ;
-          const docId = doc.id;
-
-          return { ...docData, commentId: docId };
-        });
-
-        const singlePostComments = { [post.postId]: commentsArray.length };
-        setCommentsQuantity((prevComments) => {
-          return { ...prevComments, ...singlePostComments };
-        });
-      });
-    });
-  }, []);
-
-
-  // useEffect(() => {
-  //   if (route.params) {
-  //     setPosts((prevState) => [...prevState, route.params]);
-  //   }
-   
-  // }, [route.params]);
-  // console.log('posts', posts);
-
-
-  return (
+  
+   return (
 
     <View style={styles.container}>
 
