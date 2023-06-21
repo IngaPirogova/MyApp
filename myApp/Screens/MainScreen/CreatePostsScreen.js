@@ -73,30 +73,30 @@ const CreatePostsScreen = ({ navigation, route }) => {
         return;
       }
       if (photo && name) {
-        //uploadPostToServer();
-        uploadPhotoToServer();
+        uploadPostToServer();
+       // uploadPhotoToServer();
         navigation.navigate('Posts', { photo, name, location },);
       }
     } catch (error) {
       console.log(error);
     }
   };
-//   const uploadPostToServer = async () => {
-//     const photoURL = await uploadPhotoToServer();      
-//   try {     
-//     const createPost = collection(db, 'posts');
-//     const file = await addDoc(createPost, { 
-//       photo: photoURL, 
-//       name, 
-//       location, 
-//       userId, 
-//       nickName,
-//      });      
-//      return file.userId;    
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };  
+  const uploadPostToServer = async () => {
+    const photoURL = await uploadPhotoToServer();      
+  try {     
+    const createPost = collection(db, 'posts');
+    const file = await addDoc(createPost, { 
+      photo: photoURL, 
+      name, 
+      location, 
+      userId, 
+      nickName,
+     });      
+     return file.userId;    
+  } catch (error) {
+    console.log(error);
+  }
+};  
 
     const uploadPhotoToServer = async () => {
     try {
