@@ -11,22 +11,31 @@ const PostsScreen = ({ route, navigation }) => {
   console.log('route.params', route.params);
   const [commentsQuantity, setCommentsQuantity] = useState({});
 
-     
+  // useEffect(() => {
+  //   if (route.params) {
+  //     setPosts((prevState) => [...prevState, route.params]);
+  //   }
+  // }, [route.params]);
+  // console.log('posts', posts);
+
   useEffect(() => {
     onSnapshot(collection(db, "posts"), (data) => {
       const posts = data?.docs.map((doc) => {
         const docData = doc.data() ;
         const docId = doc.id;
-
+      
         return { ...docData, postId: docId };
+        
       });
 
       setPosts(posts);
     });
+    
   }, []);
-
-  
+    
    return (
+
+    
 
     <View style={styles.container}>
 
@@ -49,7 +58,9 @@ const PostsScreen = ({ route, navigation }) => {
               <View style={styles.wrapperDescr}>
                 <TouchableOpacity
                   style={styles.inputWrapper}      
+                   //onPress={() => navigation.navigate('Comments', { comments: item.comments })}
                   onPress={() => navigation.navigate('Comments', { postId: item.id })}
+                  
                   activeOpacity={0.8}
                 >
                   <FontAwesome5 style={styles.icon} name="comment" size={24} color="#BDBDBD" />
@@ -62,7 +73,7 @@ const PostsScreen = ({ route, navigation }) => {
                 activeOpacity={0.8}
               >
                 <Octicons style={styles.icon} name="location" color="#BDBDBD" size={24} />
-                <Text>location: {item.location.coords}</Text>
+                <Text>location: {item.location?.coords || 'N/A'}</Text>
               </TouchableOpacity>
             </View>
             </View>
