@@ -22,35 +22,38 @@ const { nickName } = useSelector((state) => state.auth);
 const [newComment, setNewComment] = useState("");
 const [allComments, setAllComments] = useState([]);
 
+
+const fetchCommentsByPostId = async (postId) => {
+  try {
+    const commentsCollection = collection(db, `posts/${postId}/comments`);
+    const querySnapshot = await getDocs(commentsCollection);
+    const commentsData = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    console.log("Получены комментарии:", commentsData);
+    setAllComments(commentsData);
+  } catch (error) {
+    console.log("Ошибка при получении комментариев:", error.message);
+  }
+};
+
+useEffect(() => {
+  fetchCommentsByPostId(postId);
+}, [postId]);
+
 const uploadComments = async () => {
   try {
     const commentsCollection = collection(db, `posts/${postId}/comments`);
     const commentData = { comments: newComment, nickName };
     const commentRef = await addDoc(commentsCollection, commentData);
     await updateDoc(doc(commentsCollection, commentRef.id), commentData);
+    fetchCommentsByPostId(postId); // Обновление списка комментариев после добавления
   } catch (error) {
     console.log("Ошибка при добавлении комментария:", error.message);
   }
 };
 
-useEffect(() => {
-  const fetchComments = async () => {
-    try {
-      const commentsCollection = collection(db, `posts/${postId}/comments`);
-      const querySnapshot = await getDocs(commentsCollection);
-      const commentsData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      console.log("Получены комментарии:", commentsData);
-      setAllComments(commentsData);
-    } catch (error) {
-      console.log("Ошибка при получении комментариев:", error.message);
-    }
-  };
-
-  fetchComments();
-}, []);
 
   return (
     <TouchableWithoutFeedback 
