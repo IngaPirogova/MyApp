@@ -13,7 +13,7 @@ import {
 import { useSelector } from "react-redux";
 import {db} from "../../firebase/config";
 import { AntDesign } from "@expo/vector-icons";
-import { addDoc, collection, doc, getDocs } from "firebase/firestore"; 
+import { addDoc, collection, doc, getDocs, updateDoc } from "firebase/firestore"; 
 
 
 const CommentsScreen = ({route}) => {
@@ -27,11 +27,30 @@ const uploadComments = async () => {
     const commentsCollection = collection(db, `posts/${postId}/comments`);
     const commentData = { comments: newComment, nickName };
     const commentRef = await addDoc(commentsCollection, commentData);
-    return commentRef.id;
+    await updateDoc(doc(commentsCollection, commentRef.id), commentData);
   } catch (error) {
-    console.log(error.message);
+    console.log("Ошибка при добавлении комментария:", error.message);
   }
 };
+
+useEffect(() => {
+  const fetchComments = async () => {
+    try {
+      const commentsCollection = collection(db, `posts/${postId}/comments`);
+      const querySnapshot = await getDocs(commentsCollection);
+      const commentsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      console.log("Получены комментарии:", commentsData);
+      setAllComments(commentsData);
+    } catch (error) {
+      console.log("Ошибка при получении комментариев:", error.message);
+    }
+  };
+
+  fetchComments();
+}, []);
 
   return (
     <TouchableWithoutFeedback 

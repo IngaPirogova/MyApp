@@ -12,7 +12,7 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView, Keyboard
 } from "react-native"
- //import * as MediaLibrary from 'expo-media-library';
+ import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 import { db } from "../../firebase/config";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
@@ -22,7 +22,7 @@ import "firebase/storage";
 
 
 const CreatePostsScreen = ({ navigation, route }) => {
-  //  const [hasPermission, setHasPermission] = useState(null);
+   //const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [name, setName] = useState("");

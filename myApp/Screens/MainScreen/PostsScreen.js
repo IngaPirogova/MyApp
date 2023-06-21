@@ -8,16 +8,10 @@ import { collection, getDocs, onSnapshot } from 'firebase/firestore';
 
 const PostsScreen = ({ route, navigation }) => {
   const [posts, setPosts] = useState([]);
-  console.log('route.params', route.params);
+
   const [commentsQuantity, setCommentsQuantity] = useState({});
 
-  // useEffect(() => {
-  //   if (route.params) {
-  //     setPosts((prevState) => [...prevState, route.params]);
-  //   }
-  // }, [route.params]);
-  // console.log('posts', posts);
-
+  
   useEffect(() => {
     onSnapshot(collection(db, "posts"), (data) => {
       const posts = data?.docs.map((doc) => {
