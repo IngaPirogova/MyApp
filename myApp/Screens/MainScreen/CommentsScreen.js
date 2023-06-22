@@ -49,6 +49,7 @@ const uploadComments = async () => {
     const commentRef = await addDoc(commentsCollection, commentData);
     await updateDoc(doc(commentsCollection, commentRef.id), commentData);
     fetchCommentsByPostId(postId); // Обновление списка комментариев после добавления
+    setNewComment(""); // Сброс введенного комментария
   } catch (error) {
     console.log("Ошибка при добавлении комментария:", error.message);
   }
