@@ -22,7 +22,7 @@ import "firebase/storage";
 
 
 const CreatePostsScreen = ({ navigation, route }) => {
-  //const [hasPermission, setHasPermission] = useState(null);
+  const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [name, setName] = useState("");
@@ -31,35 +31,26 @@ const CreatePostsScreen = ({ navigation, route }) => {
 
   const { userId, nickName } = useSelector((state) => state.auth);
 
-  // useEffect(() => {
-  //     (async () => {
-  //       const { status } = await Camera.requestForegroundPermissionsAsync();
-  //       await MediaLibrary.requestPermissionsAsync();
-
-  //       setHasPermission(status === "granted");
-  //     })();
-
-  //   }, []);
-
-  //   if (hasPermission === null) {
-  //     return <View />;
-  //   }
-  //   if (hasPermission === false) {
-  //     return <Text>No access to camera</Text>;
-  //   }
-
-
   useEffect(() => {
     (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Permission to access location was denied");
+      const cameraPermission = await Camera.requestForegroundPermissionsAsync();
+      const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
+      const locationPermission = await Location.requestForegroundPermissionsAsync();
+  
+      if (
+        cameraPermission.status === "granted" &&
+        mediaLibraryPermission.status === "granted" &&
+        locationPermission.status === "granted"
+      ) {
+        setHasPermission(true);
+      } else {
+        setHasPermission(false);
       }
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location.coords);
     })();
   }, []);
-
+ 
+  
+      
   const takePhoto = async () => {
     const photo = await cameraRef.takePictureAsync();
     const location = await Location.getCurrentPositionAsync();
