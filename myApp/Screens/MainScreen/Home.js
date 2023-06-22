@@ -1,9 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// icons import
 import { Feather } from "@expo/vector-icons";
-
 import { View, TouchableOpacity, StyleSheet } from "react-native";
-
 import PostsScreen from './PostsScreen';
 import CreatePostsScreen from './CreatePostsScreen';
 import ProfileScreen from './ProfileScreen';
@@ -12,7 +9,6 @@ import ProfileScreen from './ProfileScreen';
 const MainTab = createBottomTabNavigator();
 
 const Home = () => {
-
   return (
     <MainTab.Navigator tabBarOptions={{ showLabel: false }}>
       <MainTab.Screen
@@ -27,14 +23,12 @@ const Home = () => {
           headerStyle: {
             borderBottomColor: "#BDBDBD",
             borderBottomWidth: 1,
-
           },
           headerRight: () => (
             <TouchableOpacity
               activeOpacity={0.8}
               style={{ paddingRight: 16 }}
               onPress={() => alert("This is a button!")}
-
             >
               <Feather name="log-out" size={24} color="#BDBDBD"
               />

@@ -21,14 +21,3 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-// export const uploadComment = async (postId, content) => {
-//   try {
-//     const commentsColection = collection(db, `posts/${postId}/comments`);
-//     const commentRef = await addDoc(commentsColection, content);
-
-//     return commentRef.id;
-//   } catch (error) {
-//     const newError = error;
-//     console.log(newError.message);
-//   }
-// };

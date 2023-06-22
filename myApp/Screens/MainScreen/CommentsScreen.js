@@ -11,109 +11,109 @@ import {
   FlatList,
 } from "react-native";
 import { useSelector } from "react-redux";
-import {db} from "../../firebase/config";
+import { db } from "../../firebase/config";
 import { AntDesign } from "@expo/vector-icons";
-import { addDoc, collection, doc, getDocs, updateDoc } from "firebase/firestore"; 
+import { addDoc, collection, doc, getDocs, updateDoc } from "firebase/firestore";
 
 
-const CommentsScreen = ({route}) => {
-const { postId } = route.params;
-const { nickName } = useSelector((state) => state.auth);
-const [newComment, setNewComment] = useState("");
-const [allComments, setAllComments] = useState([]);
+const CommentsScreen = ({ route }) => {
+  const { postId } = route.params;
+  const { nickName } = useSelector((state) => state.auth);
+  const [newComment, setNewComment] = useState("");
+  const [allComments, setAllComments] = useState([]);
 
 
-const fetchCommentsByPostId = async (postId) => {
-  try {
-    const commentsCollection = collection(db, `posts/${postId}/comments`);
-    const querySnapshot = await getDocs(commentsCollection);
-    const commentsData = querySnapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        postId: data.postId, // Используйте значение postId из базы данных
-        comments: data.comments,
-        nickName: data.nickName,
-      };
-    });
-    console.log("Получены комментарии:", commentsData);
-    setAllComments(commentsData);
-  } catch (error) {
-    console.log("Ошибка при получении комментариев:", error.message);
-  }
-};
+  const fetchCommentsByPostId = async (postId) => {
+    try {
+      const commentsCollection = collection(db, `posts/${postId}/comments`);
+      const querySnapshot = await getDocs(commentsCollection);
+      const commentsData = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          postId: data.postId, // Используйте значение postId из базы данных
+          comments: data.comments,
+          nickName: data.nickName,
+        };
+      });
+      console.log("Получены комментарии:", commentsData);
+      setAllComments(commentsData);
+    } catch (error) {
+      console.log("Ошибка при получении комментариев:", error.message);
+    }
+  };
 
-useEffect(() => {
-  fetchCommentsByPostId(postId);
-}, [postId]);
+  useEffect(() => {
+    fetchCommentsByPostId(postId);
+  }, [postId]);
 
-const uploadComments = async () => {
-  try {
-    const commentsCollection = collection(db, `posts/${postId}/comments`);
-    const commentData = { comments: newComment, nickName, postId };
-    const commentRef = await addDoc(commentsCollection, commentData);
-    await updateDoc(doc(commentsCollection, commentRef.id), commentData);
-    fetchCommentsByPostId(postId); // Обновление списка комментариев после добавления
-    setNewComment(""); // Сброс введенного комментария
-  } catch (error) {
-    console.log("Ошибка при добавлении комментария:", error.message);
-  }
-};
+  const uploadComments = async () => {
+    try {
+      const commentsCollection = collection(db, `posts/${postId}/comments`);
+      const commentData = { comments: newComment, nickName, postId };
+      const commentRef = await addDoc(commentsCollection, commentData);
+      await updateDoc(doc(commentsCollection, commentRef.id), commentData);
+      fetchCommentsByPostId(postId); // Обновление списка комментариев после добавления
+      setNewComment(""); // Сброс введенного комментария
+    } catch (error) {
+      console.log("Ошибка при добавлении комментария:", error.message);
+    }
+  };
 
 
   return (
-    <TouchableWithoutFeedback 
+    <TouchableWithoutFeedback
     // onPress={() => Keyboard.dismiss()}
     >
-    <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS == "ios" ? "padding" : "height"}
+      <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS == "ios" ? "padding" : "height"}
         >
 
-    <View style={styles.wrapper}>
+          <View style={styles.wrapper}>
 
-    <SafeAreaView >
-        <FlatList
-           data={allComments}
-          renderItem={({ item }) => (
-            <View>
-              <Text>{item.comments}</Text>
+            <SafeAreaView >
+              <FlatList
+                data={allComments}
+                renderItem={({ item }) => (
+                  <View>
+                    <Text>{item.comments}</Text>
+                  </View>
+                )}
+                keyExtractor={(item) => item.id}
+              />
+            </SafeAreaView>
+
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                placeholder="Комментировать..."
+                placeholderTextColor="#BDBDBD"
+                value={newComment}
+                onChangeText={(value) => setNewComment(value)}
+              />
+
+              <TouchableOpacity
+                onPress={uploadComments}
+                activeOpacity={0.8}
+                style={styles.iconWrapper}
+
+              >
+                <AntDesign
+                  style={[
+                    styles.icon,
+                    { transform: [{ translateX: -12 }, { translateY: -12 }] },
+                  ]}
+                  name="arrowup"
+                  size={24}
+                  color="#fff"
+                />
+              </TouchableOpacity>
             </View>
-          )}
-          keyExtractor={(item) => item.id}
-        />
-      </SafeAreaView>
-
-      <View style={styles.inputWrapper}>
-          <TextInput
-            style={styles.input}
-            placeholder="Комментировать..."
-            placeholderTextColor="#BDBDBD"
-             value={newComment}
-             onChangeText={(value) => setNewComment(value)}
-          />          
-    
-    <TouchableOpacity
-            onPress={uploadComments}
-            activeOpacity={0.8}
-            style={styles.iconWrapper}
-
-          >
-            <AntDesign
-              style={[
-                styles.icon,
-                { transform: [{ translateX: -12 }, { translateY: -12 }] },
-              ]}
-              name="arrowup"
-              size={24}
-              color="#fff"
-            />
-          </TouchableOpacity>
           </View>
-    </View>
-    </KeyboardAvoidingView>
-    </View>
+        </KeyboardAvoidingView>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     top: "50%",
     left: "50%",
   },
-  
+
 });
 
 export default CommentsScreen;

@@ -12,7 +12,7 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView, Keyboard
 } from "react-native"
- import * as MediaLibrary from 'expo-media-library';
+import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 import { db } from "../../firebase/config";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
@@ -22,49 +22,49 @@ import "firebase/storage";
 
 
 const CreatePostsScreen = ({ navigation, route }) => {
-   //const [hasPermission, setHasPermission] = useState(null);
+  //const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [name, setName] = useState("");
-  const [location, setLocation] = useState(null);  
+  const [location, setLocation] = useState(null);
   const storage = getStorage();
 
   const { userId, nickName } = useSelector((state) => state.auth);
 
-// useEffect(() => {
-//     (async () => {
-//       const { status } = await Camera.requestForegroundPermissionsAsync();
-//       await MediaLibrary.requestPermissionsAsync();
+  // useEffect(() => {
+  //     (async () => {
+  //       const { status } = await Camera.requestForegroundPermissionsAsync();
+  //       await MediaLibrary.requestPermissionsAsync();
 
-//       setHasPermission(status === "granted");
-//     })();
+  //       setHasPermission(status === "granted");
+  //     })();
 
-//   }, []);
+  //   }, []);
 
-//   if (hasPermission === null) {
-//     return <View />;
-//   }
-//   if (hasPermission === false) {
-//     return <Text>No access to camera</Text>;
-//   }
+  //   if (hasPermission === null) {
+  //     return <View />;
+  //   }
+  //   if (hasPermission === false) {
+  //     return <Text>No access to camera</Text>;
+  //   }
 
-  
+
   useEffect(() => {
     (async () => {
-     let { status } = await Location.requestForegroundPermissionsAsync();
-     if (status !== "granted") {
-      console.log("Permission to access location was denied");
-    }
-     let location = await Location.getCurrentPositionAsync({});
-     setLocation(location.coords);
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location.coords);
     })();
   }, []);
 
   const takePhoto = async () => {
     const photo = await cameraRef.takePictureAsync();
     const location = await Location.getCurrentPositionAsync();
-    setPhoto(photo.uri);   
-    console.log("location", location);    
+    setPhoto(photo.uri);
+    console.log("location", location);
   };
   const sendPhoto = () => {
     try {
@@ -74,7 +74,7 @@ const CreatePostsScreen = ({ navigation, route }) => {
       }
       if (photo && name) {
         uploadPostToServer();
-       // uploadPhotoToServer();
+        // uploadPhotoToServer();
         navigation.navigate('Posts', { photo, name, location },);
       }
     } catch (error) {
@@ -82,23 +82,23 @@ const CreatePostsScreen = ({ navigation, route }) => {
     }
   };
   const uploadPostToServer = async () => {
-    const photoURL = await uploadPhotoToServer();      
-  try {     
-    const createPost = collection(db, 'posts');
-    const file = await addDoc(createPost, { 
-      photo: photoURL, 
-      name, 
-      location, 
-      userId, 
-      nickName,
-     });      
-     return file.userId;    
-  } catch (error) {
-    console.log(error);
-  }
-};  
+    const photoURL = await uploadPhotoToServer();
+    try {
+      const createPost = collection(db, 'posts');
+      const file = await addDoc(createPost, {
+        photo: photoURL,
+        name,
+        location,
+        userId,
+        nickName,
+      });
+      return file.userId;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-    const uploadPhotoToServer = async () => {
+  const uploadPhotoToServer = async () => {
     try {
       const response = await fetch(photo.toString());
       const file = await response.blob();
@@ -107,14 +107,14 @@ const CreatePostsScreen = ({ navigation, route }) => {
       if (imageData !== undefined) {
         await uploadBytes(imageData, file);
       }
-      const processedPhoto = await getDownloadURL(imageData);                 
-      return processedPhoto; 
+      const processedPhoto = await getDownloadURL(imageData);
+      return processedPhoto;
     } catch (error) {
       console.log(error);
     }
   };
 
-   
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
@@ -122,7 +122,7 @@ const CreatePostsScreen = ({ navigation, route }) => {
           style={styles.wrapper}
           behavior={Platform.OS == "ios" ? "padding" : "height"}>
 
-           <View style={styles.container}>
+          <View style={styles.container}>
             <Camera style={styles.camera} ref={setCameraRef}>
               {photo && (
                 <View style={styles.takePhotoContainer}>
@@ -288,36 +288,3 @@ const styles = StyleSheet.create({
 
 export default CreatePostsScreen;
 
-// useEffect(() => {
-  //   (async () => {
-  //     const { status } = await Camera.requestForegroundPermissionsAsync();
-  //     await MediaLibrary.requestPermissionsAsync();
-
-  //     setHasPermission(status === "granted");
-  //   })();
-
-  // }, []);
-
-  // if (hasPermission === null) {
-  //   return <View />;
-  // }
-  // if (hasPermission === false) {
-  //   return <Text>No access to camera</Text>;
-  // }
-  
-
-  // useEffect(() => {
-  //   (async () => {
-  //     let { status } = await Location.requestPermissionsAsync();
-  //     if (status !== "granted") {
-  //       console.log("Permission to access location was denied");
-  //     }
-
-  //     let location = await Location.getCurrentPositionAsync({});
-  //     const coords = {
-  //       latitude: location.coords.latitude,
-  //       longitude: location.coords.longitude,
-  //     };
-  //     setLocation(coords);
-  //   })();
-  // }, []);
