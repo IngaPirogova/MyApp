@@ -10,7 +10,9 @@ const PostsScreen = ({ route, navigation }) => {
   const [posts, setPosts] = useState([]);
 
   const [commentsQuantity, setCommentsQuantity] = useState({});
-
+  const navigateToComments = (postId) => {
+    navigation.navigate('Comments', { postId });
+  };
   
   useEffect(() => {
     onSnapshot(collection(db, "posts"), (data) => {
@@ -53,7 +55,7 @@ const PostsScreen = ({ route, navigation }) => {
                 <TouchableOpacity
                   style={styles.inputWrapper}      
                    //onPress={() => navigation.navigate('Comments', { comments: item.comments })}
-                  onPress={() => navigation.navigate('Comments', { postId: item.id })}
+                  onPress={() => navigateToComments(item.postId)} 
                   
                   activeOpacity={0.8}
                 >

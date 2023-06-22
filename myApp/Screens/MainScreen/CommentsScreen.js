@@ -27,10 +27,15 @@ const fetchCommentsByPostId = async (postId) => {
   try {
     const commentsCollection = collection(db, `posts/${postId}/comments`);
     const querySnapshot = await getDocs(commentsCollection);
-    const commentsData = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const commentsData = querySnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        postId: data.postId, // Используйте значение postId из базы данных
+        comments: data.comments,
+        nickName: data.nickName,
+      };
+    });
     console.log("Получены комментарии:", commentsData);
     setAllComments(commentsData);
   } catch (error) {
@@ -45,7 +50,7 @@ useEffect(() => {
 const uploadComments = async () => {
   try {
     const commentsCollection = collection(db, `posts/${postId}/comments`);
-    const commentData = { comments: newComment, nickName };
+    const commentData = { comments: newComment, nickName, postId };
     const commentRef = await addDoc(commentsCollection, commentData);
     await updateDoc(doc(commentsCollection, commentRef.id), commentData);
     fetchCommentsByPostId(postId); // Обновление списка комментариев после добавления
