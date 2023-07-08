@@ -1,3 +1,5 @@
+//https://expo.dev/accounts/ingapie/projects/myApp/updates/37e86786-7a28-4b87-b42d-f8a684ae5596
+
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useCallback } from 'react';
